@@ -17,9 +17,14 @@ rag:
     top-k: 4
 
   chunking:
-    # characters per chunk and overlap when ingesting raw text
+    # "semantic" (group by meaning, uses embeddings) | "sentence" | "fixed"
+    strategy: ${RAG_CHUNK_STRATEGY:semantic}
+    # max characters per chunk (and window size for the fixed strategy)
     chunk-size: 800
+    # overlap between windows; only used by the fixed strategy
     overlap: 120
+    # cosine threshold below which the semantic chunker starts a new chunk
+    similarity-threshold: 0.5
 
 azure:
   openai:

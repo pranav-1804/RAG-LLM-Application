@@ -32,7 +32,9 @@ Requires JDK 17+ and Maven. There is no Maven wrapper checked in.
   `@ConditionalOnProperty("rag.vector-store")` annotations.
 - `llm/` — `LlmClient` interface; impls: `OllamaLlmClient`, `ClaudeLlmClient`.
   `LlmRouter.resolve(provider)` chooses per request, falling back to the configured default.
-- `service/` — `RagService` orchestrates ingest + query; `TextChunker` splits text.
+- `service/` — `RagService` orchestrates ingest + query; `Chunker` interface splits text,
+  with `SemanticChunker` (embedding breakpoints), `SentenceChunker`, and `FixedSizeChunker`
+  impls selected by `ChunkingConfig` from `rag.chunking.strategy`.
 - `web/` — `RagController` (`/api/ingest`, `/api/chat`, `/api/health`) and
   `ApiExceptionHandler`.
 - `config/` — `RagProperties` binds the `rag.*` config block.
@@ -76,7 +78,8 @@ Key switches:
 
 - **Add an embedding/LLM/vector backend**: implement the interface, register it
   (a `@Bean` in the relevant config or `@Component` + conditional), wire selection.
-- **Change chunking**: `rag.chunking.chunk-size` / `overlap` or `TextChunker`.
+- **Change chunking**: `rag.chunking.strategy` (`semantic`/`sentence`/`fixed`),
+  `chunk-size`, `overlap`, `similarity-threshold`; or add a new `Chunker` impl.
 - **Tune retrieval depth**: `rag.retrieval.top-k` or per-request `topK`.
 
 ## Manual smoke test

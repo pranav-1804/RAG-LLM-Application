@@ -42,7 +42,7 @@
   <text x="430" y="296" text-anchor="middle" font-size="11" fill="#1e40af">ingest: chunk → embed → store</text>
   <text x="430" y="312" text-anchor="middle" font-size="11" fill="#1e40af">query: embed → search → prompt → generate</text>
   <rect x="300" y="322" width="260" height="22" rx="5" fill="#eff6ff" stroke="#93c5fd"/>
-  <text x="430" y="337" text-anchor="middle" font-size="10.5" fill="#1d4ed8">TextChunker · size 800 / overlap 120</text>
+  <text x="430" y="337" text-anchor="middle" font-size="10.5" fill="#1d4ed8">Chunker · semantic / sentence / fixed</text>
 
   <!-- LlmRouter -->
   <rect x="280" y="560" width="220" height="60" rx="9" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
@@ -141,7 +141,7 @@
   <text x="60" y="726" font-size="14" font-weight="700" fill="#0f172a">Two flows</text>
 
   <text x="60" y="752" font-size="12.5" font-weight="700" fill="#16a34a">INGEST</text>
-  <text x="130" y="752" font-size="12" fill="#334155">text → TextChunker → EmbeddingClient.embed → VectorStore.upsert</text>
+  <text x="130" y="752" font-size="12" fill="#334155">text → Chunker (semantic by meaning) → EmbeddingClient.embed → VectorStore.upsert</text>
 
   <text x="60" y="778" font-size="12.5" font-weight="700" fill="#ea580c">QUERY</text>
   <text x="130" y="778" font-size="12" fill="#334155">question → embed → VectorStore.search (top-k=4) → grounded prompt</text>

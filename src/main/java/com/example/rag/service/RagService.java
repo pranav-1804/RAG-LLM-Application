@@ -37,23 +37,24 @@ public class RagService {
     private final com.example.rag.store.VectorStore store;
     private final LlmRouter router;
     private final RagProperties props;
+    private final Chunker chunker;
 
     public RagService(EmbeddingClient embeddings,
                       com.example.rag.store.VectorStore store,
                       LlmRouter router,
-                      RagProperties props) {
+                      RagProperties props,
+                      Chunker chunker) {
         this.embeddings = embeddings;
         this.store = store;
         this.router = router;
         this.props = props;
+        this.chunker = chunker;
     }
 
     /** Chunk, embed and store a document. Returns the number of chunks stored. */
     public int ingest(String text, String source) {
         String src = StringUtils.hasText(source) ? source : "doc-" + UUID.randomUUID();
-        List<String> texts = TextChunker.chunk(text,
-                props.getChunking().getChunkSize(),
-                props.getChunking().getOverlap());
+        List<String> texts = chunker.chunk(text);
 
         if (texts.isEmpty()) {
             return 0;

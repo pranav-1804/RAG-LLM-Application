@@ -12,11 +12,18 @@ store the vectors for later retrieval.
 **Endpoint:** `POST /api/ingest` — body `{ "text": "...", "source": "optional-label" }`
 → returns `{ "source", "chunksStored" }`.
 
-**Pipeline:** `TextChunker.chunk()` → `EmbeddingClient.embedAll()` →
+**Pipeline:** `Chunker.chunk()` → `EmbeddingClient.embedAll()` →
 `VectorStore.upsert()`, orchestrated in `RagService.ingest()`.
 
-**Tunable:** `rag.chunking.chunk-size` (default 800 chars) and `rag.chunking.overlap`
-(default 120). Larger chunks = more context per hit but coarser retrieval.
+**Chunking strategy** (`rag.chunking.strategy`):
+- `semantic` (default) — `SemanticChunker` embeds each sentence and starts a new chunk
+  where consecutive-sentence similarity drops below `similarity-threshold` (0.5). Groups
+  by meaning rather than arbitrary offsets.
+- `sentence` — `SentenceChunker` packs whole sentences up to `chunk-size`. No embeddings.
+- `fixed` — `FixedSizeChunker`: fixed-size windows with `overlap`.
+
+**Tunable:** `chunk-size` (default 800 chars caps chunk length), `overlap` (fixed only),
+`similarity-threshold` (semantic only). Larger chunks = more context per hit but coarser retrieval.
 
 ## 2. Embed text
 

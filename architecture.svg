@@ -1,0 +1,201 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 1160" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#475569"/>
+    </marker>
+    <marker id="arrowBack" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L8,3 L0,6 Z" fill="#0ea5e9"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1240" height="1160" fill="#ffffff"/>
+
+  <!-- Title -->
+  <text x="620" y="44" text-anchor="middle" font-size="28" font-weight="700" fill="#0f172a">RAG Service — Architecture</text>
+  <text x="620" y="72" text-anchor="middle" font-size="15" fill="#64748b">Java 17 · Spring Boot 3 · provider-agnostic at every layer (swap backends by config, not code)</text>
+
+  <!-- Client -->
+  <rect x="40" y="150" width="160" height="260" rx="10" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="120" y="180" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">Client</text>
+  <text x="120" y="200" text-anchor="middle" font-size="12" fill="#475569">(Postman / curl / app)</text>
+  <rect x="58" y="225" width="124" height="46" rx="7" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="120" y="248" text-anchor="middle" font-size="12.5" font-weight="600" fill="#1e293b">POST /api/ingest</text>
+  <text x="120" y="263" text-anchor="middle" font-size="10.5" fill="#64748b">store knowledge</text>
+  <rect x="58" y="285" width="124" height="46" rx="7" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="120" y="308" text-anchor="middle" font-size="12.5" font-weight="600" fill="#1e293b">POST /api/chat</text>
+  <text x="120" y="323" text-anchor="middle" font-size="10.5" fill="#64748b">ask a question</text>
+  <rect x="58" y="345" width="124" height="40" rx="7" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="120" y="370" text-anchor="middle" font-size="12.5" font-weight="600" fill="#1e293b">GET /api/health</text>
+
+  <!-- Spring Boot App container -->
+  <rect x="240" y="110" width="500" height="640" rx="14" fill="#f8fafc" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 3"/>
+  <text x="260" y="135" font-size="14" font-weight="700" fill="#334155">Spring Boot Application · :8080</text>
+
+  <!-- Controller -->
+  <rect x="280" y="155" width="220" height="56" rx="9" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="390" y="180" text-anchor="middle" font-size="14" font-weight="700" fill="#1e3a8a">RagController</text>
+  <text x="390" y="198" text-anchor="middle" font-size="11" fill="#1e40af">REST endpoints · validation</text>
+
+  <!-- RagService -->
+  <rect x="280" y="250" width="300" height="104" rx="9" fill="#bfdbfe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="430" y="276" text-anchor="middle" font-size="14" font-weight="700" fill="#1e3a8a">RagService — orchestrator</text>
+  <text x="430" y="296" text-anchor="middle" font-size="11" fill="#1e40af">ingest: chunk → embed → store</text>
+  <text x="430" y="312" text-anchor="middle" font-size="11" fill="#1e40af">query: embed → search → prompt → generate</text>
+  <rect x="300" y="322" width="260" height="22" rx="5" fill="#eff6ff" stroke="#93c5fd"/>
+  <text x="430" y="337" text-anchor="middle" font-size="10.5" fill="#1d4ed8">TextChunker · size 800 / overlap 120</text>
+
+  <!-- LlmRouter -->
+  <rect x="280" y="560" width="220" height="60" rx="9" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="390" y="585" text-anchor="middle" font-size="14" font-weight="700" fill="#5b21b6">LlmRouter</text>
+  <text x="390" y="603" text-anchor="middle" font-size="10.5" fill="#6d28d9">resolve(provider) → default fallback</text>
+
+  <!-- Interface ports (the 3 seams) -->
+  <!-- EmbeddingClient -->
+  <rect x="560" y="250" width="160" height="60" rx="9" fill="#ccfbf1" stroke="#0d9488" stroke-width="1.5"/>
+  <text x="640" y="274" text-anchor="middle" font-size="13" font-weight="700" fill="#115e59">EmbeddingClient</text>
+  <text x="640" y="292" text-anchor="middle" font-size="10" fill="#0f766e">«interface»</text>
+
+  <!-- VectorStore -->
+  <rect x="560" y="385" width="160" height="60" rx="9" fill="#ede9fe" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="640" y="409" text-anchor="middle" font-size="13" font-weight="700" fill="#5b21b6">VectorStore</text>
+  <text x="640" y="427" text-anchor="middle" font-size="10" fill="#6d28d9">«interface»</text>
+
+  <!-- LlmClient -->
+  <rect x="560" y="560" width="160" height="60" rx="9" fill="#ffedd5" stroke="#ea580c" stroke-width="1.5"/>
+  <text x="640" y="584" text-anchor="middle" font-size="13" font-weight="700" fill="#9a3412">LlmClient</text>
+  <text x="640" y="602" text-anchor="middle" font-size="10" fill="#c2410c">«interface»</text>
+
+  <!-- Implementations (right, outside app) -->
+  <!-- Embedding impls -->
+  <rect x="820" y="232" width="380" height="40" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="838" y="257" font-size="12.5" font-weight="600" fill="#14532d">Ollama · nomic-embed-text (768-d)</text>
+  <rect x="1136" y="243" width="48" height="18" rx="9" fill="#16a34a"/>
+  <text x="1160" y="256" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">LOCAL</text>
+
+  <rect x="820" y="282" width="380" height="40" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="838" y="307" font-size="12.5" font-weight="600" fill="#1e3a8a">Azure OpenAI · text-embedding-3-small (1536-d)</text>
+  <rect x="1136" y="293" width="48" height="18" rx="9" fill="#2563eb"/>
+  <text x="1160" y="306" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">CLOUD</text>
+
+  <!-- Vector impls -->
+  <rect x="820" y="375" width="380" height="40" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="838" y="400" font-size="12.5" font-weight="600" fill="#14532d">In-memory · cosine similarity</text>
+  <rect x="1136" y="386" width="48" height="18" rx="9" fill="#16a34a"/>
+  <text x="1160" y="399" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">LOCAL</text>
+
+  <rect x="820" y="423" width="380" height="40" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="838" y="448" font-size="12.5" font-weight="600" fill="#1e3a8a">Azure Cosmos DB NoSQL · VectorDistance()</text>
+  <rect x="1136" y="434" width="48" height="18" rx="9" fill="#2563eb"/>
+  <text x="1160" y="447" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">CLOUD</text>
+
+  <!-- LLM impls -->
+  <rect x="820" y="550" width="380" height="40" rx="8" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+  <text x="838" y="575" font-size="12.5" font-weight="600" fill="#14532d">Ollama · llama3.2 (/api/chat)</text>
+  <rect x="1136" y="561" width="48" height="18" rx="9" fill="#16a34a"/>
+  <text x="1160" y="574" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">LOCAL</text>
+
+  <rect x="820" y="598" width="380" height="40" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.5"/>
+  <text x="838" y="623" font-size="12.5" font-weight="600" fill="#1e3a8a">Claude · Anthropic Messages API</text>
+  <rect x="1136" y="609" width="48" height="18" rx="9" fill="#2563eb"/>
+  <text x="1160" y="622" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">CLOUD</text>
+
+  <!-- Arrows: client -> controller -->
+  <path d="M200,250 C230,250 250,200 278,188" fill="none" stroke="#475569" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <path d="M200,308 C232,308 250,210 278,200" fill="none" stroke="#475569" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+  <!-- controller <-> service -->
+  <path d="M390,211 L390,250" fill="none" stroke="#475569" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <path d="M410,250 L410,213" fill="none" stroke="#0ea5e9" stroke-width="1.6" marker-end="url(#arrowBack)"/>
+
+  <!-- service -> embedding -->
+  <path d="M580,290 L558,285" fill="none" stroke="#475569" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="548" y="245" font-size="10.5" fill="#0f766e" font-weight="600">embed text</text>
+  <!-- service -> vectorstore -->
+  <path d="M520,354 C540,372 545,400 558,408" fill="none" stroke="#475569" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="470" y="392" font-size="10.5" fill="#6d28d9" font-weight="600">upsert / search top-k</text>
+  <!-- service -> router -->
+  <path d="M360,354 L388,560" fill="none" stroke="#475569" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="300" y="470" font-size="10.5" fill="#5b21b6" font-weight="600">build prompt</text>
+  <!-- router -> llmclient -->
+  <path d="M500,590 L558,590" fill="none" stroke="#475569" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <!-- answer back: llmclient -> service (dashed) -->
+  <path d="M640,560 C640,500 470,470 432,356" fill="none" stroke="#0ea5e9" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arrowBack)"/>
+  <text x="660" y="500" font-size="10.5" fill="#0284c7" font-weight="600">answer + sources</text>
+
+  <!-- seams -> impls -->
+  <path d="M720,278 C760,278 780,290 818,300" fill="none" stroke="#0d9488" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <path d="M720,282 C770,282 785,252 818,252" fill="none" stroke="#0d9488" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+  <path d="M720,408 C760,408 780,410 818,420" fill="none" stroke="#7c3aed" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <path d="M720,400 C770,400 785,396 818,395" fill="none" stroke="#7c3aed" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+  <path d="M720,585 C760,585 785,600 818,615" fill="none" stroke="#ea580c" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <path d="M720,580 C770,580 785,575 818,570" fill="none" stroke="#ea580c" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+  <text x="1010" y="225" text-anchor="middle" font-size="11" fill="#64748b" font-style="italic">rag.embedding-provider</text>
+  <text x="1010" y="368" text-anchor="middle" font-size="11" fill="#64748b" font-style="italic">rag.vector-store</text>
+  <text x="1010" y="543" text-anchor="middle" font-size="11" fill="#64748b" font-style="italic">rag.llm-provider / per-request</text>
+
+  <!-- Flow legend -->
+  <rect x="40" y="700" width="700" height="160" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="60" y="726" font-size="14" font-weight="700" fill="#0f172a">Two flows</text>
+
+  <text x="60" y="752" font-size="12.5" font-weight="700" fill="#16a34a">INGEST</text>
+  <text x="130" y="752" font-size="12" fill="#334155">text → TextChunker → EmbeddingClient.embed → VectorStore.upsert</text>
+
+  <text x="60" y="778" font-size="12.5" font-weight="700" fill="#ea580c">QUERY</text>
+  <text x="130" y="778" font-size="12" fill="#334155">question → embed → VectorStore.search (top-k=4) → grounded prompt</text>
+  <text x="130" y="795" font-size="12" fill="#334155">→ LlmRouter → LlmClient.complete → answer + cited sources</text>
+
+  <text x="60" y="824" font-size="11.5" fill="#64748b">Invariant: embedding dimensions must match at ingest &amp; query (and the Cosmos vector policy). Change model ⇒ re-ingest.</text>
+  <text x="60" y="843" font-size="11.5" fill="#64748b">Anti-hallucination: system prompt answers only from context; empty retrieval returns a safe message without calling the LLM.</text>
+
+  <!-- Color key -->
+  <rect x="760" y="700" width="440" height="160" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="780" y="726" font-size="14" font-weight="700" fill="#0f172a">Legend</text>
+  <rect x="780" y="740" width="22" height="14" rx="3" fill="#ccfbf1" stroke="#0d9488"/>
+  <text x="812" y="752" font-size="12" fill="#334155">«interface» seam — swappable backend</text>
+  <rect x="780" y="764" width="22" height="14" rx="3" fill="#dcfce7" stroke="#16a34a"/>
+  <text x="812" y="776" font-size="12" fill="#334155">Local / offline implementation (free)</text>
+  <rect x="780" y="788" width="22" height="14" rx="3" fill="#dbeafe" stroke="#2563eb"/>
+  <text x="812" y="800" font-size="12" fill="#334155">Managed cloud (Azure / Anthropic)</text>
+  <line x1="780" y1="816" x2="802" y2="816" stroke="#475569" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="812" y="820" font-size="12" fill="#334155">request / call flow</text>
+  <line x1="780" y1="836" x2="802" y2="836" stroke="#0ea5e9" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arrowBack)"/>
+  <text x="812" y="840" font-size="12" fill="#334155">response (answer + sources)</text>
+
+  <!-- ===== Configuration panel ===== -->
+  <rect x="40" y="892" width="1160" height="244" rx="12" fill="#ffffff" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="60" y="920" font-size="16" font-weight="700" fill="#0f172a">Configuration — how application.yml becomes Java properties</text>
+  <text x="60" y="940" font-size="12" fill="#64748b">One YAML file is the single source of truth. Every value uses the <tspan font-family="Consolas, monospace" fill="#334155">${ENV_VAR:default}</tspan> form, so environment variables override defaults at startup.</text>
+
+  <!-- YAML snippet box -->
+  <rect x="60" y="956" width="430" height="160" rx="8" fill="#0f172a"/>
+  <text x="76" y="978" font-family="Consolas, Menlo, monospace" font-size="12" fill="#e2e8f0">
+    <tspan x="76" dy="0" fill="#7dd3fc">rag:</tspan>
+    <tspan x="92" dy="18"><tspan fill="#a5b4fc">vector-store:</tspan> <tspan fill="#fcd34d">${RAG_VECTOR_STORE:memory}</tspan></tspan>
+    <tspan x="92" dy="18"><tspan fill="#a5b4fc">embedding-provider:</tspan> <tspan fill="#fcd34d">${RAG_EMBEDDING_PROVIDER:ollama}</tspan></tspan>
+    <tspan x="92" dy="18"><tspan fill="#a5b4fc">llm-provider:</tspan> <tspan fill="#fcd34d">${RAG_LLM_PROVIDER:ollama}</tspan></tspan>
+    <tspan x="92" dy="18"><tspan fill="#a5b4fc">retrieval:</tspan></tspan>
+    <tspan x="108" dy="18"><tspan fill="#a5b4fc">top-k:</tspan> <tspan fill="#fca5a5">4</tspan></tspan>
+    <tspan x="76" dy="18" fill="#7dd3fc">ollama:</tspan>
+    <tspan x="92" dy="18"><tspan fill="#a5b4fc">embed-model:</tspan> <tspan fill="#fcd34d">${OLLAMA_EMBED_MODEL:nomic-embed-text}</tspan></tspan>
+  </text>
+
+  <!-- arrows to two binding mechanisms -->
+  <path d="M490,1000 C520,1000 530,995 558,995" fill="none" stroke="#475569" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <path d="M490,1060 C520,1060 530,1075 558,1075" fill="none" stroke="#475569" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="500" y="985" font-size="10.5" fill="#64748b">Spring binds</text>
+
+  <!-- Binding 1: @ConfigurationProperties -->
+  <rect x="560" y="966" width="620" height="58" rx="8" fill="#dbeafe" stroke="#2563eb" stroke-width="1.4"/>
+  <text x="576" y="988" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#1e3a8a">@ConfigurationProperties(prefix = "rag") → RagProperties</text>
+  <text x="576" y="1008" font-size="11.5" fill="#1e40af">Typed bean: rag.* fields (vectorStore, retrieval.topK, chunking...) injected into RagService.</text>
+
+  <!-- Binding 2: @Value -->
+  <rect x="560" y="1036" width="620" height="58" rx="8" fill="#ccfbf1" stroke="#0d9488" stroke-width="1.4"/>
+  <text x="576" y="1058" font-family="Consolas, monospace" font-size="12" font-weight="700" fill="#115e59">@Value("${ollama.embed-model:...}") → injected into clients</text>
+  <text x="576" y="1078" font-size="11.5" fill="#0f766e">Per-field injection in EmbeddingConfig, OllamaLlmClient, ClaudeLlmClient, CosmosVectorStore.</text>
+
+  <text x="576" y="1112" font-size="11" fill="#64748b">@ConfigurationPropertiesScan on the main class enables binding · @ConditionalOnProperty("rag.vector-store") picks the VectorStore bean.</text>
+</svg>

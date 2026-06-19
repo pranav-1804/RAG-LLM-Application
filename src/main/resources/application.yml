@@ -1,0 +1,58 @@
+server:
+  port: 8080
+
+rag:
+  # Which vector store to use: "memory" (default, no Azure needed) or "cosmos"
+  vector-store: ${RAG_VECTOR_STORE:memory}
+
+  # Default LLM provider for generation: "ollama" (local) or "claude" (remote).
+  # A per-request "provider" field in /chat overrides this.
+  llm-provider: ${RAG_LLM_PROVIDER:ollama}
+
+  # Where embeddings come from: "ollama" (local), "azure",
+  # or "auto" (Azure if configured, otherwise Ollama).
+  embedding-provider: ${RAG_EMBEDDING_PROVIDER:ollama}
+
+  retrieval:
+    top-k: 4
+
+  chunking:
+    # characters per chunk and overlap when ingesting raw text
+    chunk-size: 800
+    overlap: 120
+
+azure:
+  openai:
+    # e.g. https://my-resource.openai.azure.com
+    endpoint: ${AZURE_OPENAI_ENDPOINT:}
+    api-key: ${AZURE_OPENAI_API_KEY:}
+    # name of your embeddings deployment, e.g. text-embedding-3-small
+    embeddings-deployment: ${AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT:text-embedding-3-small}
+    api-version: ${AZURE_OPENAI_API_VERSION:2024-02-01}
+    # dimension of the embedding model output (3-small=1536, 3-large=3072)
+    embedding-dimensions: ${AZURE_OPENAI_EMBEDDING_DIMENSIONS:1536}
+
+cosmos:
+  endpoint: ${COSMOS_ENDPOINT:}
+  key: ${COSMOS_KEY:}
+  database: ${COSMOS_DATABASE:ragdb}
+  container: ${COSMOS_CONTAINER:document}
+
+ollama:
+  base-url: ${OLLAMA_BASE_URL:http://localhost:11434}
+  # lightweight local chat model (~2GB). Even smaller: llama3.2:1b, qwen2.5:1.5b
+  model: ${OLLAMA_MODEL:llama3.2}
+  # local embedding model used when rag.embedding-provider=ollama
+  embed-model: ${OLLAMA_EMBED_MODEL:nomic-embed-text}
+  embed-dimensions: ${OLLAMA_EMBED_DIMENSIONS:768}
+
+claude:
+  base-url: ${CLAUDE_BASE_URL:https://api.anthropic.com}
+  api-key: ${ANTHROPIC_API_KEY:}
+  model: ${CLAUDE_MODEL:claude-sonnet-4-6}
+  anthropic-version: "2023-06-01"
+  max-tokens: 1024
+
+logging:
+  level:
+    com.example.rag: INFO

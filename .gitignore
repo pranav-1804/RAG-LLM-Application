@@ -6,3 +6,5 @@ target/
 .env
 *.log
 node_modules/
+load-env.ps1
+

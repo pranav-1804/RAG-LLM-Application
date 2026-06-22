@@ -8,6 +8,8 @@ import com.example.rag.model.Chunk;
 import com.example.rag.model.Dtos.ChatResponse;
 import com.example.rag.model.Dtos.Citation;
 import com.example.rag.model.ScoredChunk;
+import com.example.rag.retrieval.LexicalIndex;
+import com.example.rag.retrieval.Retriever;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -35,17 +37,23 @@ public class RagService {
 
     private final EmbeddingClient embeddings;
     private final com.example.rag.store.VectorStore store;
+    private final LexicalIndex lexicalIndex;
+    private final Retriever retriever;
     private final LlmRouter router;
     private final RagProperties props;
     private final Chunker chunker;
 
     public RagService(EmbeddingClient embeddings,
                       com.example.rag.store.VectorStore store,
+                      LexicalIndex lexicalIndex,
+                      Retriever retriever,
                       LlmRouter router,
                       RagProperties props,
                       Chunker chunker) {
         this.embeddings = embeddings;
         this.store = store;
+        this.lexicalIndex = lexicalIndex;
+        this.retriever = retriever;
         this.router = router;
         this.props = props;
         this.chunker = chunker;
@@ -67,6 +75,11 @@ public class RagService {
                 .toList();
 
         store.upsert(chunks);
+        // Stores with native full-text search (e.g. Cosmos) index the text themselves on
+        // upsert, so the in-memory BM25 index is only needed for the in-memory store.
+        if (!(store instanceof com.example.rag.store.HybridSearchStore)) {
+            lexicalIndex.index(chunks);
+        }
         log.info("Ingested {} chunks from source '{}'", chunks.size(), src);
         return chunks.size();
     }
@@ -77,7 +90,7 @@ public class RagService {
                 ? topKOverride : props.getRetrieval().getTopK();
 
         List<Float> queryEmbedding = embeddings.embed(question);
-        List<ScoredChunk> hits = store.search(queryEmbedding, topK);
+        List<ScoredChunk> hits = retriever.retrieve(question, queryEmbedding, topK);
 
         LlmClient llm = router.resolve(provider);
         String context = buildContext(hits);

@@ -19,8 +19,21 @@ public class RagProperties {
 
     public static class Retrieval {
         private int topK = 4;
+        /** "hybrid" (vector + BM25, RRF-fused), "vector", or "lexical". */
+        private String mode = "hybrid";
+        /** RRF constant k; larger flattens the rank weighting (hybrid only). */
+        private int rrfK = 60;
+        /** Candidates pulled from each retriever before fusion (hybrid only). */
+        private int candidatePool = 20;
+
         public int getTopK() { return topK; }
         public void setTopK(int topK) { this.topK = topK; }
+        public String getMode() { return mode; }
+        public void setMode(String mode) { this.mode = mode; }
+        public int getRrfK() { return rrfK; }
+        public void setRrfK(int rrfK) { this.rrfK = rrfK; }
+        public int getCandidatePool() { return candidatePool; }
+        public void setCandidatePool(int candidatePool) { this.candidatePool = candidatePool; }
     }
 
     public static class Chunking {

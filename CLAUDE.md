@@ -35,6 +35,13 @@ Requires JDK 17+ and Maven. There is no Maven wrapper checked in.
 - `service/` — `RagService` orchestrates ingest + query; `Chunker` interface splits text,
   with `SemanticChunker` (embedding breakpoints), `SentenceChunker`, and `FixedSizeChunker`
   impls selected by `ChunkingConfig` from `rag.chunking.strategy`.
+- `retrieval/` — `Retriever` interface; impls `VectorRetriever`, `LexicalRetriever`
+  (BM25 over `LexicalIndex`/`InMemoryBm25Index`), and `HybridRetriever` (vector + lexical
+  fused by `Rrf`, Reciprocal Rank Fusion). `RetrievalConfig` picks one from
+  `rag.retrieval.mode`. The store choice is independent of the mode: with the in-memory
+  store, lexical/hybrid use the in-memory BM25 index; with a store implementing
+  `HybridSearchStore` (Cosmos), lexical/hybrid are delegated to the store's native
+  server-side full-text + hybrid search (`CosmosLexicalRetriever`/`CosmosHybridRetriever`).
 - `web/` — `RagController` (`/api/ingest`, `/api/chat`, `/api/health`) and
   `ApiExceptionHandler`.
 - `config/` — `RagProperties` binds the `rag.*` config block.
@@ -48,6 +55,9 @@ Key switches:
 - `RAG_VECTOR_STORE` = `memory` (default) | `cosmos`
 - `RAG_EMBEDDING_PROVIDER` = `ollama` | `azure` | `auto` (Azure if configured, else Ollama)
 - `RAG_LLM_PROVIDER` = `ollama` (default) | `claude`
+- `RAG_RETRIEVAL_MODE` = `hybrid` (default) | `vector` | `lexical` (with the memory store
+  lexical/hybrid use the in-memory BM25 index; with the Cosmos store they run server-side
+  via Cosmos's native full-text + hybrid search, which needs a full-text index on `/text`)
 - Azure OpenAI: `AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_API_KEY`,
   `AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT`, `AZURE_OPENAI_EMBEDDING_DIMENSIONS`
 - Cosmos: `COSMOS_ENDPOINT`, `COSMOS_KEY`, `COSMOS_DATABASE`, `COSMOS_CONTAINER`
@@ -61,6 +71,12 @@ Key switches:
 - **Cosmos partition key is `/id`.** `CosmosVectorStore` upserts with `PartitionKey(id)`.
   A new container must be created with partition key `/id`, a vector policy on
   `/embedding`, and `/embedding/*` in excluded paths.
+- **Cosmos lexical/hybrid modes require a full-text index.** For `RAG_RETRIEVAL_MODE`
+  `lexical` or `hybrid` with the Cosmos store, the container also needs a full-text policy
+  (`fullTextPaths: [{ path: "/text", language: "en-US" }]`) and a full-text index on
+  `/text`, and the account must have the vector/full-text search feature enabled. Vector
+  policies/indexes are immutable — a container missing the full-text policy must be
+  recreated. Requires `azure-cosmos` >= 4.65 (GA at 4.79).
 - **Generation always needs a real LLM** (Ollama running or a Claude key). The in-memory
   store needs no setup, but embeddings always require Ollama or Azure.
 - Keep each provider behind its interface; add new backends as new impls, not by
@@ -81,6 +97,9 @@ Key switches:
 - **Change chunking**: `rag.chunking.strategy` (`semantic`/`sentence`/`fixed`),
   `chunk-size`, `overlap`, `similarity-threshold`; or add a new `Chunker` impl.
 - **Tune retrieval depth**: `rag.retrieval.top-k` or per-request `topK`.
+- **Change retrieval mode**: `rag.retrieval.mode` (`hybrid`/`vector`/`lexical`); tune
+  hybrid fusion with `rag.retrieval.rrf-k` and `rag.retrieval.candidate-pool`; or add a
+  new `Retriever` impl and wire it in `RetrievalConfig`.
 
 ## Manual smoke test
 

@@ -15,6 +15,16 @@ rag:
 
   retrieval:
     top-k: 4
+    # "hybrid" (vector + BM25 keyword, RRF-fused) | "vector" | "lexical".
+    # With vector-store=memory, lexical/hybrid use the in-memory BM25 index and the
+    # candidate-pool / rrf-k below. With vector-store=cosmos, lexical/hybrid are run
+    # server-side by Cosmos (FullTextScore + VectorDistance, native RRF) — this requires
+    # a full-text policy and full-text index on /text (candidate-pool / rrf-k are unused).
+    mode: ${RAG_RETRIEVAL_MODE:hybrid}
+    # candidates pulled from each retriever before fusion (in-memory hybrid only)
+    candidate-pool: 20
+    # RRF constant k (in-memory hybrid only)
+    rrf-k: 60
 
   chunking:
     # "semantic" (group by meaning, uses embeddings) | "sentence" | "fixed"

@@ -19,7 +19,7 @@
 
     <properties>
         <java.version>17</java.version>
-        <azure-cosmos.version>4.63.3</azure-cosmos.version>
+        <azure-cosmos.version>4.79.0</azure-cosmos.version>
     </properties>
 
     <dependencies>

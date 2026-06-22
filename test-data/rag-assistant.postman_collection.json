@@ -1,0 +1,128 @@
+{
+  "info": {
+    "name": "RAG Assistant - Local & Remote LLM",
+    "description": "Ingest sample documents and ask grounded questions. Set the baseUrl variable if not running on localhost:8080.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/api/health", "host": ["{{baseUrl}}"], "path": ["api", "health"] }
+      }
+    },
+    {
+      "name": "Ingest - Cosmos hybrid search",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/api/ingest", "host": ["{{baseUrl}}"], "path": ["api", "ingest"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"source\": \"cosmos-hybrid-search\",\n  \"text\": \"Azure Cosmos DB for NoSQL supports hybrid search by combining dense vector search with full-text BM25 scoring. A hybrid query uses the RRF system function inside an ORDER BY RANK clause that wraps both VectorDistance and FullTextScore. The target container needs a vector policy on the embedding path, a vector index such as DiskANN, a full-text policy on the text path, and a full-text index. Vector policies are immutable after creation, so adding full-text support to an existing container requires creating a new container. Reciprocal Rank Fusion merges the two ranked lists using only each document rank, which keeps it robust across the otherwise incompatible cosine and BM25 score scales. This is ideal for retrieval augmented generation where a question needs both semantic recall and exact keyword precision.\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Ingest - Payments incident",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/api/ingest", "host": ["{{baseUrl}}"], "path": ["api", "ingest"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"source\": \"payments-incident-INC5521\",\n  \"text\": \"Incident report INC-5521: the checkout service began returning error code ERR4096 during card authorization at 09:14 UTC. The root cause was an expired TLS certificate on the payment gateway, which made the downstream call fail with SVC_TIMEOUT after the default thirty second deadline. Customers saw a generic Payment failed message and no funds were captured. Mitigation was to rotate the certificate and restart the gateway pods, after which error rates returned to normal within eight minutes. Follow up actions include adding a certificate expiry alert, reducing the gateway timeout to ten seconds, and adding a synthetic checkout probe so ERR4096 is detected before customers are affected.\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Ingest - Travel & expense policy",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/api/ingest", "host": ["{{baseUrl}}"], "path": ["api", "ingest"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"source\": \"travel-expense-policy\",\n  \"text\": \"The company travel and expense policy reimburses economy airfare, standard hotel rooms up to 200 dollars per night, and reasonable ground transport. Meals are covered up to 75 dollars per day for domestic trips and 100 dollars per day for international trips. Receipts are required for any expense over 25 dollars and must be submitted within thirty days through the Concur portal. Alcohol, personal entertainment, and hotel minibar charges are not reimbursable. Pre approval from a manager is required for any single expense above 1000 dollars. Mileage for personal vehicle use is reimbursed at the standard federal rate, and rental cars should be booked in the midsize class or lower.\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Ingest - Engineer onboarding",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/api/ingest", "host": ["{{baseUrl}}"], "path": ["api", "ingest"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"source\": \"onboarding-new-engineers\",\n  \"text\": \"New engineers complete onboarding during their first two weeks. On day one, IT provisions a laptop, a single sign on account, and access to the source repository. The buddy program pairs each new hire with a senior engineer for the first month. Required reading includes the architecture overview, the coding standards, and the incident response runbook. Every engineer must finish the security awareness training and enable multi factor authentication before they are allowed to deploy to production. The first pull request should be a small documentation fix so the new hire exercises the full review, build, and deploy pipeline end to end before touching critical code.\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Ingest - Release notes v2.4.1",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/api/ingest", "host": ["{{baseUrl}}"], "path": ["api", "ingest"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"source\": \"release-notes-v2.4.1\",\n  \"text\": \"Release v2.4.1 introduces semantic chunking, configurable retrieval modes, and a new health endpoint. The retrieval mode can be set to hybrid, vector, or lexical through the RAG_RETRIEVAL_MODE setting. Embeddings can come from local Ollama or Azure OpenAI, and generation can be routed to a local Llama model or remote Claude. This patch fixes a bug where the candidate pool setting was ignored under heavy load, and a slow memory leak in the lexical index. The minimum supported Java version is now seventeen, and the Azure Cosmos SDK was upgraded so lexical and hybrid retrieval can run server side using native full-text search.\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Chat - keyword (ERR4096)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/api/chat", "host": ["{{baseUrl}}"], "path": ["api", "chat"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"question\": \"What caused error ERR4096 and how was it fixed?\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Chat - semantic (Cosmos hybrid)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/api/chat", "host": ["{{baseUrl}}"], "path": ["api", "chat"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"question\": \"How do I set up a container to run hybrid search in Cosmos DB?\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Chat - policy lookup",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/api/chat", "host": ["{{baseUrl}}"], "path": ["api", "chat"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"question\": \"What is the daily meal allowance for international trips, and do I need receipts?\"\n}"
+        }
+      }
+    },
+    {
+      "name": "Chat - with provider + topK override",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": { "raw": "{{baseUrl}}/api/chat", "host": ["{{baseUrl}}"], "path": ["api", "chat"] },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"question\": \"What changed in release v2.4.1?\",\n  \"provider\": \"ollama\",\n  \"topK\": 3\n}"
+        }
+      }
+    }
+  ]
+}

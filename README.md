@@ -1,4 +1,12 @@
-<video src="https://github.com/pranav-1804/RAG-LLM-Application/raw/main/assets/LLM.mp4" controls width="100%"></video>
+<!--
+  Demo video. GitHub only renders an inline player for videos hosted on its own
+  attachments CDN, NOT for files served from /raw/. To enable the player:
+    1. Open this README in the GitHub web editor (or open a new issue).
+    2. Drag assets/LLM.mp4 into the text area and wait for the upload to finish.
+    3. GitHub inserts a https://github.com/user-attachments/assets/<id> URL.
+    4. Paste that URL as the src below (replace USER_ATTACHMENTS_URL_HERE), then discard the issue.
+-->
+<video src="USER_ATTACHMENTS_URL_HERE" controls width="100%"></video>
 
 > ▶️ **Demo video:** if the player above doesn't load, [watch LLM.mp4](https://github.com/pranav-1804/RAG-LLM-Application/raw/main/assets/LLM.mp4).
 

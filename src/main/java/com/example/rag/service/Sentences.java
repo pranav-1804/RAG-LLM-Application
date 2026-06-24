@@ -17,13 +17,13 @@ public final class Sentences {
         if (text == null || text.isBlank()) {
             return out;
         }
-        // Split into paragraphs first so blank lines always break.
+      
         for (String paragraph : text.split("\\n\\s*\\n")) {
             String p = paragraph.strip();
             if (p.isEmpty()) {
                 continue;
             }
-            // Then split each paragraph into sentences, keeping the terminator.
+          
             for (String sentence : p.split("(?<=[.!?])\\s+")) {
                 String s = sentence.replaceAll("\\s+", " ").strip();
                 if (!s.isEmpty()) {

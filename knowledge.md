@@ -1,7 +1,37 @@
 # Knowledge Notes
 
-Background on the retrieval techniques used in this RAG service. For *where* things
-live in the code, see `CLAUDE.md`; this file explains the *why* and the *math*.
+Background on the chunking and retrieval techniques used in this RAG service. For
+*where* things live in the code, see `CLAUDE.md`; for *what* the service can do and
+how to extend it, see `SKILLS.md`; this file explains the *why* and the *math*.
+
+## Chunking: why and how
+
+Retrieval works on chunks, not whole documents. Chunk too large and a single hit
+drags in unrelated text (coarse retrieval, diluted relevance); chunk too small and you
+fragment ideas across hits and lose context. The goal is chunks that each hold one
+coherent idea. The strategy is selected by `rag.chunking.strategy`.
+
+- **`semantic` (default)** — `SemanticChunker` embeds every sentence, then walks them
+  in order keeping a running group; when the **cosine similarity between adjacent
+  sentences drops below `similarity-threshold` (0.5)** the meaning has shifted, so it
+  closes the current chunk and starts a new one. This groups text by *meaning* rather
+  than at arbitrary character offsets, so a chunk boundary lands where the topic
+  actually changes. A `chunk-size` character budget still caps runaway chunks. Cost:
+  one extra batched embedding call over the sentences at ingest time (those sentence
+  vectors are only used to find boundaries — the resulting chunks are re-embedded for
+  storage).
+- **`sentence`** — `SentenceChunker` packs whole sentences up to `chunk-size` without
+  ever splitting mid-sentence. No embeddings, so it's cheap, but boundaries are
+  size-driven, not meaning-driven.
+- **`fixed`** — `FixedSizeChunker` slices fixed-size windows with a configurable
+  `overlap`. Simplest and fully deterministic; `overlap` re-includes the tail of one
+  chunk at the head of the next so an idea spanning a boundary still appears intact in
+  at least one chunk.
+
+**Intuition:** larger chunks give the LLM more context per hit but make retrieval
+coarser (more off-topic text per match); smaller chunks retrieve more precisely but
+risk cutting an idea in half. Semantic chunking tries to get precise boundaries
+*without* an arbitrary size, falling back on the size cap only as a safety valve.
 
 ## Why hybrid retrieval
 
@@ -98,8 +128,10 @@ server-returned ordering — again only meaningful as a relative ranking.
 | `rag.retrieval.candidate-pool` | — | candidates pulled from each retriever before fusion |
 | `rag.retrieval.rrf-k` | — | RRF smoothing; higher = flatter rank weighting |
 
-## References
+## Quick reference: enabling each configuration
 
-- Robertson & Zaragoza, *The Probabilistic Relevance Framework: BM25 and Beyond* (2009).
-- Cormack, Clarke & Büttcher, *Reciprocal Rank Fusion outperforms Condorcet and individual
-  rank learning methods* (SIGIR 2009).
+- Fully local/free: `RAG_EMBEDDING_PROVIDER=ollama`, `RAG_VECTOR_STORE=memory`,
+  `RAG_LLM_PROVIDER=ollama`.
+- Azure-backed retrieval, local generation: `RAG_EMBEDDING_PROVIDER=azure`,
+  `RAG_VECTOR_STORE=cosmos`, `RAG_LLM_PROVIDER=ollama`.
+- Remote generation: add `ANTHROPIC_API_KEY` and pass `"provider":"claude"`.

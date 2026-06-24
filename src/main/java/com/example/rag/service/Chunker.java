@@ -8,6 +8,5 @@ import java.util.List;
  */
 public interface Chunker {
 
-    /** Split text into chunks (order preserved, no empty chunks). */
     List<String> chunk(String text);
 }

@@ -9,11 +9,11 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * Selects the chunking strategy from {@code rag.chunking.strategy}:
- * <ul>
- *   <li>{@code semantic} (default) — boundaries where meaning shifts (uses embeddings)</li>
- *   <li>{@code sentence} — pack whole sentences up to a size budget (no embeddings)</li>
- *   <li>{@code fixed} — fixed-size character windows with overlap</li>
- * </ul>
+ * 
+ *   {@code semantic} (default) — boundaries where meaning shifts (uses embeddings)</li>
+ *   {@code sentence} — pack whole sentences up to a size budget (no embeddings)</li>
+ *   {@code fixed} — fixed-size character windows with overlap</li>
+ * 
  */
 @Configuration
 public class ChunkingConfig {

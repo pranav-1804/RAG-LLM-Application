@@ -23,12 +23,10 @@ import java.util.Set;
 @Component
 public class InMemoryBm25Index implements LexicalIndex {
 
-    /** BM25 term-frequency saturation. */
     private static final double K1 = 1.2;
-    /** BM25 length-normalisation. */
     private static final double B = 0.75;
 
-    /** A handful of high-frequency words that add noise to lexical matching. */
+    
     private static final Set<String> STOPWORDS = Set.of(
             "the", "a", "an", "and", "or", "of", "to", "in", "is", "are", "was", "were",
             "for", "on", "with", "as", "by", "at", "it", "this", "that", "be", "do", "how");
@@ -44,7 +42,6 @@ public class InMemoryBm25Index implements LexicalIndex {
     @Override
     public synchronized void index(List<Chunk> chunks) {
         for (Chunk c : chunks) {
-            // Replacing an existing id: roll back its old contribution to the stats first.
             Doc previous = docs.remove(c.id());
             if (previous != null) {
                 totalLength -= previous.length();

@@ -10,13 +10,13 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * Selects the retrieval strategy from {@code rag.retrieval.mode}:
- * <ul>
- *   <li>{@code hybrid} (default) — vector + BM25 keyword search fused with RRF</li>
- *   <li>{@code vector} — dense vector similarity only (the original behaviour)</li>
- *   <li>{@code lexical} — BM25 keyword search only</li>
- * </ul>
+
+ *   {@code hybrid} (default) — vector + BM25 keyword search fused with RRF</li>
+ *   {@code vector} — dense vector similarity only (the original behaviour)</li>
+ *   {@code lexical} — BM25 keyword search only</li>
+
  *
- * <p>The store choice is independent of the mode. With the in-memory store, lexical and
+ * The store choice is independent of the mode. With the in-memory store, lexical and
  * hybrid fuse the in-memory {@link LexicalIndex} (BM25) with vector search locally. When
  * the store implements {@link HybridSearchStore} (e.g. Cosmos DB), those modes are
  * delegated to the store's native server-side full-text + hybrid search instead.
@@ -31,8 +31,6 @@ public class RetrievalConfig {
         RagProperties.Retrieval r = props.getRetrieval();
         String mode = r.getMode() == null ? "hybrid" : r.getMode().toLowerCase();
 
-        // Backends with native full-text + hybrid ranking (e.g. Cosmos) handle lexical and
-        // hybrid server-side; the in-memory BM25 index is used only by the in-memory store.
         if (store instanceof HybridSearchStore hybridStore) {
             switch (mode) {
                 case "vector" -> {

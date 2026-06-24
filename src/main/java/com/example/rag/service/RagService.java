@@ -75,8 +75,6 @@ public class RagService {
                 .toList();
 
         store.upsert(chunks);
-        // Stores with native full-text search (e.g. Cosmos) index the text themselves on
-        // upsert, so the in-memory BM25 index is only needed for the in-memory store.
         if (!(store instanceof com.example.rag.store.HybridSearchStore)) {
             lexicalIndex.index(chunks);
         }
@@ -84,7 +82,7 @@ public class RagService {
         return chunks.size();
     }
 
-    /** Run a RAG query and return the answer plus its sources. */
+    
     public ChatResponse chat(String question, String provider, Integer topKOverride) {
         int topK = topKOverride != null && topKOverride > 0
                 ? topKOverride : props.getRetrieval().getTopK();

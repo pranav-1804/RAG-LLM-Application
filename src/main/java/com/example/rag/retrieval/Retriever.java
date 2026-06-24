@@ -8,7 +8,7 @@ import java.util.List;
  * Retrieves the most relevant chunks for a question. Implementations decide how:
  * dense vector similarity, lexical keyword (BM25), or a hybrid fusion of both.
  *
- * <p>Both the raw query text and its embedding are supplied so an implementation can
+ * Both the raw query text and its embedding are supplied so an implementation can
  * use whichever it needs without re-embedding.
  */
 public interface Retriever {

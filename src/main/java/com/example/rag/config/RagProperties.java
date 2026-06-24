@@ -8,22 +8,18 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "rag")
 public class RagProperties {
 
-    /** "memory" or "cosmos". */
     private String vectorStore = "memory";
 
-    /** Default generation provider: "ollama" or "claude". */
     private String llmProvider = "ollama";
 
     private Retrieval retrieval = new Retrieval();
     private Chunking chunking = new Chunking();
 
     public static class Retrieval {
+
         private int topK = 4;
-        /** "hybrid" (vector + BM25, RRF-fused), "vector", or "lexical". */
         private String mode = "hybrid";
-        /** RRF constant k; larger flattens the rank weighting (hybrid only). */
         private int rrfK = 60;
-        /** Candidates pulled from each retriever before fusion (hybrid only). */
         private int candidatePool = 20;
 
         public int getTopK() { return topK; }
@@ -37,13 +33,10 @@ public class RagProperties {
     }
 
     public static class Chunking {
-        /** "semantic" (by meaning), "sentence" (structure-aware), or "fixed". */
+       
         private String strategy = "semantic";
-        /** Max characters per chunk (and window size for the fixed strategy). */
         private int chunkSize = 800;
-        /** Overlap between windows; only used by the fixed strategy. */
         private int overlap = 120;
-        /** Cosine threshold below which the semantic chunker starts a new chunk. */
         private double similarityThreshold = 0.5;
 
         public String getStrategy() { return strategy; }

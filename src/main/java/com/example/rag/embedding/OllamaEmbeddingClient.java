@@ -8,10 +8,10 @@ import java.util.Map;
 /**
  * Embedding client backed by a local Ollama embedding model via {@code POST /api/embed}.
  *
- * <p>Request:  {@code {"model": "nomic-embed-text", "input": ["a", "b"]}}
- * <p>Response: {@code {"embeddings": [[...], [...]]}}
+ * Request:  {@code {"model": "nomic-embed-text", "input": ["a", "b"]}}
+ * Response: {@code {"embeddings": [[...], [...]]}}
  *
- * <p>Lets the whole pipeline run locally and free — no Azure or API keys.
+ * Lets the whole pipeline run locally and free — no Azure or API keys.
  */
 public class OllamaEmbeddingClient implements EmbeddingClient {
 

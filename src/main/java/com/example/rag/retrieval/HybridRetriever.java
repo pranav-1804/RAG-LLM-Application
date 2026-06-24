@@ -10,7 +10,7 @@ import java.util.List;
  * lexical index, then fuses the two rankings with Reciprocal Rank Fusion and returns
  * the top-k. Combines semantic recall with exact-keyword precision.
  *
- * <p>If the lexical index is empty (nothing ingested yet) RRF naturally reduces to the
+ * If the lexical index is empty (nothing ingested yet) RRF naturally reduces to the
  * vector ranking, so this degrades gracefully.
  */
 public class HybridRetriever implements Retriever {
@@ -30,8 +30,6 @@ public class HybridRetriever implements Retriever {
 
     @Override
     public List<ScoredChunk> retrieve(String queryText, List<Float> queryEmbedding, int topK) {
-        // Pull a wider pool from each retriever than the final cut so fusion has room to
-        // promote chunks that rank moderately in both lists.
         int pool = Math.max(topK, candidatePool);
         List<ScoredChunk> vectorHits = store.search(queryEmbedding, pool);
         List<ScoredChunk> lexicalHits = lexicalIndex.search(queryText, pool);

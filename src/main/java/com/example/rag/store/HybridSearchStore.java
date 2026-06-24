@@ -15,13 +15,6 @@ import java.util.List;
  */
 public interface HybridSearchStore {
 
-    /**
-     * Server-side hybrid search: combines dense vector similarity with full-text (BM25)
-     * scoring, fused by the store's own Reciprocal Rank Fusion. Returns the top-k, best
-     * first.
-     */
     List<ScoredChunk> hybridSearch(String queryText, List<Float> queryEmbedding, int topK);
-
-    /** Server-side full-text (BM25) search only. Returns the top-k, best first. */
     List<ScoredChunk> lexicalSearch(String queryText, int topK);
 }

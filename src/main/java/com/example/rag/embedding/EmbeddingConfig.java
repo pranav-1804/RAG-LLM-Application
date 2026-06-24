@@ -9,11 +9,9 @@ import org.springframework.util.StringUtils;
 
 /**
  * Chooses the embedding implementation based on {@code rag.embedding-provider}:
- * <ul>
- *   <li>{@code ollama} — local Ollama embedding model (e.g. nomic-embed-text)</li>
- *   <li>{@code azure}  — Azure OpenAI embeddings</li>
- *   <li>{@code auto} (default) — Azure if configured, otherwise Ollama</li>
- * </ul>
+ *    — local Ollama embedding model (e.g. nomic-embed-text)</li>
+ *    — Azure OpenAI embeddings</li>
+ *    (default) — Azure if configured, otherwise Ollama</li>
  */
 @Configuration
 public class EmbeddingConfig {

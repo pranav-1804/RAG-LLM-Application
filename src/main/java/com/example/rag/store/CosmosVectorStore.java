@@ -30,7 +30,7 @@ import java.util.StringJoiner;
  *
  * <p>Active when {@code rag.vector-store=cosmos}.
  *
- * <p>The target container is expected to be created with a vector embedding
+ * The target container is expected to be created with a vector embedding
  * policy and a vector index on {@code /embedding} (see README). For the hybrid and
  * lexical retrieval modes it must <em>also</em> have a full-text policy and a full-text
  * index on {@code /text}; the app then issues Cosmos's native {@code FullTextScore} /
@@ -82,7 +82,6 @@ public class CosmosVectorStore implements VectorStore, HybridSearchStore {
 
     @Override
     public List<ScoredChunk> search(List<Float> queryEmbedding, int topK) {
-        // VectorDistance returns *distance* (smaller = closer); ORDER BY ascending.
         String sql = "SELECT TOP @k c.id, c.source, c.text, "
                 + "VectorDistance(c.embedding, @embedding) AS distance "
                 + "FROM c ORDER BY VectorDistance(c.embedding, @embedding)";
@@ -105,12 +104,10 @@ public class CosmosVectorStore implements VectorStore, HybridSearchStore {
     @Override
     public List<ScoredChunk> hybridSearch(String queryText, List<Float> queryEmbedding, int topK) {
         List<String> terms = tokenize(queryText);
-        // FullTextScore needs at least one term; with none, hybrid reduces to pure vector.
         if (terms.isEmpty()) {
             return search(queryEmbedding, topK);
         }
 
-        // Hybrid ranking: fuse dense VectorDistance with full-text BM25 via Cosmos RRF.
         List<SqlParameter> params = new ArrayList<>();
         params.add(new SqlParameter("@k", topK));
         params.add(new SqlParameter("@embedding", queryEmbedding));
@@ -140,11 +137,6 @@ public class CosmosVectorStore implements VectorStore, HybridSearchStore {
         return rankedQuery(new SqlQuerySpec(sql, params));
     }
 
-    /**
-     * Runs an {@code ORDER BY RANK} query. Cosmos returns the rows in fused-rank order but
-     * does not project the RRF score, so we synthesise a descending score from the row's
-     * position purely to preserve ordering downstream.
-     */
     private List<ScoredChunk> rankedQuery(SqlQuerySpec spec) {
         CosmosPagedIterable<RankRow> rows =
                 container.queryItems(spec, new CosmosQueryRequestOptions(), RankRow.class);
@@ -158,7 +150,6 @@ public class CosmosVectorStore implements VectorStore, HybridSearchStore {
         return results;
     }
 
-    /** Adds one {@code @tN} parameter per term and returns the comma-joined placeholder list. */
     private static String bindTerms(List<String> terms, List<SqlParameter> params) {
         StringJoiner placeholders = new StringJoiner(", ");
         for (int i = 0; i < terms.size(); i++) {
@@ -169,7 +160,6 @@ public class CosmosVectorStore implements VectorStore, HybridSearchStore {
         return placeholders.toString();
     }
 
-    /** Lowercase, split on non-alphanumeric, drop empties — the search terms for FullTextScore. */
     private static List<String> tokenize(String text) {
         if (text == null || text.isBlank()) {
             return List.of();
@@ -201,7 +191,7 @@ public class CosmosVectorStore implements VectorStore, HybridSearchStore {
         }
     }
 
-    /** Projection for vector-distance query results. */
+    
     public static class ResultRow {
         public String id;
         public String source;
@@ -209,7 +199,7 @@ public class CosmosVectorStore implements VectorStore, HybridSearchStore {
         public double distance;
     }
 
-    /** Projection for ranked (hybrid/lexical) query results; rank order carries the score. */
+    
     public static class RankRow {
         public String id;
         public String source;

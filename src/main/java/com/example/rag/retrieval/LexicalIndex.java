@@ -12,9 +12,7 @@ import java.util.List;
  */
 public interface LexicalIndex {
 
-    /** Add chunks to the index. Idempotent per chunk id. */
     void index(List<Chunk> chunks);
 
-    /** Return the top-k chunks by lexical relevance to {@code queryText}, best first. */
     List<ScoredChunk> search(String queryText, int topK);
 }

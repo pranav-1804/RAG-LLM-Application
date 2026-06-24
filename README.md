@@ -6,7 +6,7 @@
     3. GitHub inserts a https://github.com/user-attachments/assets/<id> URL.
     4. Paste that URL as the src below (replace USER_ATTACHMENTS_URL_HERE), then discard the issue.
 -->
-<video src="USER_ATTACHMENTS_URL_HERE" controls width="100%"></video>
+<video src="https://github.com/user-attachments/assets/69e68e4c-eada-4aaa-bab4-9fea79df23c7" controls width="100%"></video>
 
 > ▶️ **Demo video:** if the player above doesn't load, [watch LLM.mp4](https://github.com/pranav-1804/RAG-LLM-Application/raw/main/assets/LLM.mp4).
 
